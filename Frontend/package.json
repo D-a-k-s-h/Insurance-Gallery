@@ -12,6 +12,7 @@
     "concurrently": "^9.1.2",
     "dom": "^0.0.3",
     "file-saver": "^2.0.5",
+    "insurance-gallery": "file:..",
     "mui-datatables": "^4.3.0",
     "react": "^18.2.0",
     "react-daisyui": "^5.0.5",

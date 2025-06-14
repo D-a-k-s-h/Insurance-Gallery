@@ -9,6 +9,7 @@ const fileUpload = require("express-fileupload");
 const authRoutes = require('./Routes/authRoutes');
 const searchRoutes = require('./Routes/searchRoutes'); 
 const creationRoutes = require('./Routes/creationRoutes');
+const path = require("path");
 
 const PORT = process.env.PORT || 4000;
 
@@ -16,15 +17,22 @@ app.listen(PORT, () => {
     console.log(`Server connected to port: ${PORT}`);
 });
 
+app.use(express.static(path.join(__dirname, "../Frontend/build")));
+
+app.get("*", (req,res) => {
+    res.sendFile(path.join(__dirname, "../Frontend/build/index.html"));
+})
+
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-    cors({
-        origin:"http://localhost:3000",
-        credentials:true
-    })
-)
+
+const corsOptions = {
+    origin: true,
+    credentials: true
+}
+
+app.use(cors(corsOptions));
 
 app.use(
     fileUpload({
