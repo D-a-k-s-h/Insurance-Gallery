@@ -19,17 +19,13 @@ app.listen(PORT, () => {
 
 app.use(express.static(path.join(__dirname, "../Frontend/build")));
 
-app.get("*", (req,res) => {
-    res.sendFile(path.join(__dirname, "../Frontend/build/index.html"));
-})
-
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-    origin: true,
-    credentials: true
+    origin:true,
+    credentials:true
 }
 
 app.use(cors(corsOptions));
@@ -58,3 +54,7 @@ app.use("/",(req,res) => {
         message:"Your server is up and running"
     })
 });
+
+app.get("*", (req,res) => {
+    res.sendFile(path.join(__dirname, "../Frontend/build/index.html"));
+})
