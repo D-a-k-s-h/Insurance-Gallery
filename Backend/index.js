@@ -13,24 +13,22 @@ const path = require("path");
 
 const PORT = process.env.PORT || 4000;
 
+app.listen(PORT, () => {
+    console.log(`Server connected to port: ${PORT}`);
+});
+
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
 
-const corsOptions = {
-    origin:true,
-    credentials:true
-}
+const frontendPath = path.join(__dirname, "../Frontend/build");
 
-if(process.env.NODE_ENV === "production"){
-    app.use(express.static(path.join(__dirname, "../Frontend/build")));
-
-    app.get("*", (req,res) => {
-        res.sendFile(path.join(__dirname, "../Frontend/build/index.html"));
+app.use(
+    cors({
+        origin:"https://insurance-gallery.onrender.com",
+        credentials:true
     })
-}
-
-app.use(cors(corsOptions));
+)
 
 app.use(
     fileUpload({
@@ -39,24 +37,28 @@ app.use(
     })
 )
 
+//routes
+app.use('/api/v1/auth',authRoutes);
+app.use('/api/v1/search',searchRoutes);
+app.use('/api/v1/create',creationRoutes);
+
 //connect to database
 dBConnect();
 
 //cloudinary connect
 cloudinaryConnect();
 
-//routes
-app.use('/api/v1/auth',authRoutes);
-app.use('/api/v1/search',searchRoutes);
-app.use('/api/v1/create',creationRoutes);
+if(process.env.NODE_ENV === "production"){
+    app.use(express.static(frontendPath));
+
+    app.get(/^\/(?!api).*/, (req,res) => {
+        res.sendFile(path.join(frontendPath,"index.html"));
+    })
+}
 
 app.use("/",(req,res) => {
     return res.json({
         success:true,
         message:"Your server is up and running"
     })
-});
-
-app.listen(PORT, () => {
-    console.log(`Server connected to port: ${PORT}`);
 });
